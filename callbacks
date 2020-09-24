@@ -1,0 +1,136 @@
+var addTwo = (x)=>{return x+2}
+
+function map(arr, cb){
+  let newArr = []
+  for(let elem of arr){
+    newArr.push(cb(elem))
+  }
+  return newArr;
+}
+
+function forEach(arr, cb){
+  for(let elem of arr){
+    cb(elem);
+  }
+}
+
+function mapWith(arr, cb){
+  let newArr = [];
+  forEach(arr, (x)=>{
+    newArr.push(cb(x))
+  })
+  return newArr;
+}
+
+function reduce(arr, cb, intialValue){
+  if(intialValue === undefined){
+    intialValue = arr.shift()
+  }
+  for(let elem of arr){
+    intialValue = cb(intialValue, elem)
+  }
+  return intialValue;
+  
+}
+
+const nums = [4, 1, 3];
+const add = function (a, b) {
+  return a + b;
+};
+console.log(reduce(nums, add, 0)) 
+
+function intersection(...arrays) {
+  return arrays.reduce((acc, array) => {
+    return array.filter((item) => acc.includes(item));
+  });
+}
+console.log(
+  intersection([5, 10, 15, 20], [15, 88, 1, 5, 7], [1, 10, 15, 5, 20])
+);
+
+
+function union(...arrays){
+  return arrays.reduce((acc, array) => {
+    const updatedAcc = array.filter((elem) => !acc.includes(elem))
+    return acc.concat(updatedAcc);
+  })
+}
+console.log(union([5, 10, 15], [15, 88, 1, 5, 7], [100, 15, 10, 1, 5]));
+
+function objOfMatches2(source, output, cb){
+  const obj = {};
+   for(let index in source){
+     if(cb(source[index]) === output[index]){
+       obj[source[index]] = output[index];
+     }
+   }
+   return obj;
+}
+
+function objOfMatches(source, output, cb){
+  let obj = {};
+  let index = 0;
+  return source.reduce((acc, elem) => {
+    if(cb(elem) === output[index]){
+      acc[elem] = output[index];
+    }
+    index++;
+    return acc;
+  }, obj)
+}
+
+console.log(
+  objOfMatches(
+    ["hi", "howdy", "bye", "later", "hello"],
+    ["HI", "Howdy", "BYE", "LATER", "hello"],
+    function (str) {
+      return str.toUpperCase();
+    }
+  )
+);
+
+function multiMap(values, cb_array){
+  let obj = {};
+  return values.reduce((acc, elem) => {
+
+    const res_arr = cb_array.map((cb) => cb(elem))
+    acc[elem] = res_arr;
+    return acc;
+  }, obj)
+}
+
+console.log(
+  multiMap(
+    ["catfood", "glue", "beer"],
+    [
+      function (str) {
+        return str.toUpperCase();
+      },
+      function (str) {
+        return str[0].toUpperCase() + str.slice(1).toLowerCase();
+      },
+      function (str) {
+        return str + str;
+      },
+    ]
+  )
+);
+// output: { catfood: ['CATFOOD', 'Catfood', 'catfoodcatfood'], glue: ['GLUE', 'Glue', 'glueglue'], beer: ['BEER', 'Beer', 'beerbeer'] }
+
+function objectFilter(obj, cb){
+  let res_obj = {}
+  for(let key in obj){
+    if(cb(key) != obj[key]){
+      delete obj[key];
+    }
+  }
+  return obj;
+}
+
+const cities = {
+  London: "LONDON",
+  LA: "Los Angeles",
+  Paris: "PARIS",
+};
+console.log(objectFilter(cities, (city) => city.toUpperCase()));
+// output: { London: 'LONDON', Paris: 'PARIS'}
